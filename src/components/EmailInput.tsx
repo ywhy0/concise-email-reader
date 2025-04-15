@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Mail, Trash } from 'lucide-react';
@@ -12,15 +12,20 @@ interface EmailInputProps {
 
 const EmailInput: React.FC<EmailInputProps> = ({ onSubmit, onClear, isProcessing }) => {
   const [emailContent, setEmailContent] = useState('');
-
+  
+  // Handle the form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (emailContent.trim()) {
-      onSubmit(emailContent);
+    const trimmedContent = emailContent.trim();
+    if (trimmedContent) {
+      console.log("Submitting email content:", trimmedContent.substring(0, 50));
+      onSubmit(trimmedContent);
     }
   };
 
+  // Handle clearing the input and related data
   const handleClear = () => {
+    console.log("Clearing email input...");
     setEmailContent('');
     // Call the onClear callback if provided
     if (onClear) {

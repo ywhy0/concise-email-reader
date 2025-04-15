@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EmailInput from '@/components/EmailInput';
 import SummaryResult from '@/components/SummaryResult';
 import SentimentToggle from '@/components/SentimentToggle';
@@ -16,15 +16,26 @@ const Index = () => {
   const [currentEmailContent, setCurrentEmailContent] = useState<string>('');
   const { toast } = useToast();
 
+  // Reset summary when component mounts to ensure fresh state
+  useEffect(() => {
+    setSummaryResult(null);
+    setCurrentEmailContent('');
+  }, []);
+
   const handleSubmit = async (emailContent: string) => {
+    // Always clear previous summary result first to avoid stale data
+    setSummaryResult(null);
+    
     // Store the current email content being processed
     setCurrentEmailContent(emailContent);
     setIsProcessing(true);
+    
     try {
+      console.log("Processing email content:", emailContent.substring(0, 50));
       const result = await generateSummary(emailContent);
       setSummaryResult(result);
       
-      // Show appropriate toast message based on content length
+      // Show appropriate toast message based on content length and result
       if (emailContent.trim().length < 20) {
         toast({
           title: "Content too short",
@@ -56,6 +67,7 @@ const Index = () => {
 
   // Handle clearing the summary
   const handleClearSummary = () => {
+    console.log("Clearing all summary data...");
     setSummaryResult(null);
     setCurrentEmailContent('');
   };
@@ -87,7 +99,7 @@ const Index = () => {
                 sentiment={summaryResult.sentiment}
                 showSentiment={showSentiment}
                 contentTooShort={summaryResult.bulletPoints.length === 0 && 
-                                summaryResult.actionItems.length === 0}
+                                 summaryResult.actionItems.length === 0}
               />
             ) : (
               <EmptyState />

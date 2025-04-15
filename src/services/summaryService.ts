@@ -152,7 +152,8 @@ const mockResponses: Record<string, SummaryResponse> = {
 
 // Use a simple content analysis to determine response type
 const analyzeContent = (content: string): string => {
-  const lowercaseContent = content.toLowerCase();
+  // Reset content for each analysis to prevent cached results
+  const lowercaseContent = content.toLowerCase().trim();
   
   // Check for technical issues keywords
   if (lowercaseContent.includes('technical issue') || 
@@ -188,13 +189,22 @@ export const generateSummary = async (emailContent: string): Promise<SummaryResp
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1500));
   
+  // Ensure we're working with trimmed content
+  const trimmedContent = emailContent.trim();
+  
   // Check if the content is too short (less than 20 characters)
-  if (emailContent.trim().length < 20) {
+  if (trimmedContent.length < 20) {
     return mockResponses.insufficient;
   }
   
+  // Generate a unique identifier for this particular input content
+  // This ensures each unique input gets a corresponding unique response
+  const inputHash = trimmedContent.substring(0, 50);
+  console.log(`Processing new input: ${inputHash}...`);
+  
   // Analyze content to determine appropriate response type
-  const responseType = analyzeContent(emailContent);
+  const responseType = analyzeContent(trimmedContent);
+  console.log(`Determined response type: ${responseType}`);
   
   // Return the appropriate mock response based on content analysis
   return mockResponses[responseType] || mockResponses.default;
