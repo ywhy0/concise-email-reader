@@ -30,6 +30,16 @@ const Index = () => {
           title: "Content too short",
           description: "Please provide a more complete email for better summarization.",
         });
+      } else if (result.bulletPoints.length === 0 && result.actionItems.length === 0) {
+        toast({
+          title: "Limited content",
+          description: "The provided content may not contain enough specific details for a complete summary.",
+        });
+      } else {
+        toast({
+          title: "Summary generated",
+          description: "Email has been successfully summarized.",
+        });
       }
     } catch (error) {
       console.error('Error generating summary:', error);

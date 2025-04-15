@@ -107,6 +107,37 @@ const mockResponses: Record<string, SummaryResponse> = {
       tone: "Urgent"
     }
   },
+  technical: {
+    summary: "There appears to be a technical issue with the application that needs immediate attention. The email describes problems with the summary generator not reflecting the actual input content.",
+    bulletPoints: [
+      "Summary generator not processing new input correctly",
+      "System seems to use cached data instead of current input",
+      "User experience is negatively impacted by this issue"
+    ],
+    actionItems: [
+      {
+        task: "Investigate the input processing pipeline",
+        deadline: "Immediately"
+      },
+      {
+        task: "Fix data synchronization between input and summary",
+        deadline: "High priority"
+      },
+      {
+        task: "Implement proper validation for short inputs",
+        deadline: "This sprint"
+      }
+    ],
+    projectStatus: {
+      status: 'at-risk',
+      details: "Critical functionality is not working as expected and needs immediate attention."
+    },
+    sentiment: {
+      label: "Negative",
+      score: 0.7,
+      tone: "Urgent"
+    }
+  },
   insufficient: {
     summary: "The provided content is too short to generate a meaningful summary.",
     bulletPoints: [],
@@ -119,6 +150,40 @@ const mockResponses: Record<string, SummaryResponse> = {
   }
 };
 
+// Use a simple content analysis to determine response type
+const analyzeContent = (content: string): string => {
+  const lowercaseContent = content.toLowerCase();
+  
+  // Check for technical issues keywords
+  if (lowercaseContent.includes('technical issue') || 
+      lowercaseContent.includes('bug') || 
+      lowercaseContent.includes('not working') ||
+      lowercaseContent.includes('error') ||
+      lowercaseContent.includes('problem')) {
+    return 'technical';
+  }
+  
+  // Check for positive sentiment keywords
+  if (lowercaseContent.includes('congratulations') || 
+      lowercaseContent.includes('great job') || 
+      lowercaseContent.includes('approved') ||
+      lowercaseContent.includes('thank you') ||
+      lowercaseContent.includes('well done')) {
+    return 'positive';
+  } 
+  
+  // Check for negative sentiment keywords
+  if (lowercaseContent.includes('disappointed') || 
+      lowercaseContent.includes('urgent') || 
+      lowercaseContent.includes('failed') ||
+      lowercaseContent.includes('delay') ||
+      lowercaseContent.includes('concern')) {
+    return 'negative';
+  }
+  
+  return 'default';
+};
+
 export const generateSummary = async (emailContent: string): Promise<SummaryResponse> => {
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1500));
@@ -128,17 +193,9 @@ export const generateSummary = async (emailContent: string): Promise<SummaryResp
     return mockResponses.insufficient;
   }
   
-  // Determine mock response based on content
-  // Using toLowerCase() to make the check case-insensitive
-  if (emailContent.toLowerCase().includes("congratulations") || 
-      emailContent.toLowerCase().includes("great job") || 
-      emailContent.toLowerCase().includes("approved")) {
-    return mockResponses.positive;
-  } else if (emailContent.toLowerCase().includes("disappointed") || 
-             emailContent.toLowerCase().includes("urgent") || 
-             emailContent.toLowerCase().includes("failed")) {
-    return mockResponses.negative;
-  }
+  // Analyze content to determine appropriate response type
+  const responseType = analyzeContent(emailContent);
   
-  return mockResponses.default;
+  // Return the appropriate mock response based on content analysis
+  return mockResponses[responseType] || mockResponses.default;
 };
