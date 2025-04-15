@@ -106,6 +106,16 @@ const mockResponses: Record<string, SummaryResponse> = {
       score: 0.8,
       tone: "Urgent"
     }
+  },
+  insufficient: {
+    summary: "The provided content is too short to generate a meaningful summary.",
+    bulletPoints: [],
+    actionItems: [],
+    projectStatus: {
+      status: 'not-applicable',
+      details: "Unable to assess project status from the provided content."
+    },
+    sentiment: null
   }
 };
 
@@ -113,7 +123,13 @@ export const generateSummary = async (emailContent: string): Promise<SummaryResp
   // Simulate API call delay
   await new Promise(resolve => setTimeout(resolve, 1500));
   
+  // Check if the content is too short (less than 20 characters)
+  if (emailContent.trim().length < 20) {
+    return mockResponses.insufficient;
+  }
+  
   // Determine mock response based on content
+  // Using toLowerCase() to make the check case-insensitive
   if (emailContent.toLowerCase().includes("congratulations") || 
       emailContent.toLowerCase().includes("great job") || 
       emailContent.toLowerCase().includes("approved")) {

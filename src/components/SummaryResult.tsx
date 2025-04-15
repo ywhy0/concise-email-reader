@@ -13,9 +13,10 @@ import {
   Clock,
   CheckCircle2,
   AlertTriangle,
-  XCircle
+  XCircle,
+  Info
 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { SummaryResponse } from '@/services/summaryService';
 
@@ -36,6 +37,7 @@ interface SummaryResultProps {
     tone?: string;
   } | null;
   showSentiment: boolean;
+  contentTooShort?: boolean;
 }
 
 const SummaryResult: React.FC<SummaryResultProps> = ({ 
@@ -44,7 +46,8 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
   actionItems = [], 
   projectStatus,
   sentiment, 
-  showSentiment 
+  showSentiment,
+  contentTooShort = false
 }) => {
   const { toast } = useToast();
   const [copied, setCopied] = React.useState(false);
@@ -160,6 +163,13 @@ const SummaryResult: React.FC<SummaryResultProps> = ({
       </CardHeader>
       <CardContent>
         <div className="rounded-md bg-muted p-4 relative">
+          {contentTooShort ? (
+            <div className="flex items-center space-x-2 p-2 mb-4 bg-amber-50 text-amber-800 rounded-md border border-amber-200">
+              <Info className="h-5 w-5" />
+              <p>The provided content is too short for a detailed summary. Please provide a more complete email.</p>
+            </div>
+          ) : null}
+          
           <div className="mb-4">
             <p className="whitespace-pre-wrap">{summary}</p>
           </div>

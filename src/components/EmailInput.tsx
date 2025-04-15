@@ -6,10 +6,11 @@ import { Loader2, Mail, Trash } from 'lucide-react';
 
 interface EmailInputProps {
   onSubmit: (email: string) => void;
+  onClear?: () => void;
   isProcessing: boolean;
 }
 
-const EmailInput: React.FC<EmailInputProps> = ({ onSubmit, isProcessing }) => {
+const EmailInput: React.FC<EmailInputProps> = ({ onSubmit, onClear, isProcessing }) => {
   const [emailContent, setEmailContent] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,6 +22,10 @@ const EmailInput: React.FC<EmailInputProps> = ({ onSubmit, isProcessing }) => {
 
   const handleClear = () => {
     setEmailContent('');
+    // Call the onClear callback if provided
+    if (onClear) {
+      onClear();
+    }
   };
 
   return (
