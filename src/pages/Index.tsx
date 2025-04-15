@@ -41,7 +41,10 @@ const Index = () => {
             
             {summaryResult ? (
               <SummaryResult 
-                summary={summaryResult.summary} 
+                summary={summaryResult.summary}
+                bulletPoints={summaryResult.bulletPoints}
+                actionItems={summaryResult.actionItems}
+                projectStatus={summaryResult.projectStatus}
                 sentiment={summaryResult.sentiment}
                 showSentiment={showSentiment}
               />
