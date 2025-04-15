@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ReloadIcon } from '@radix-ui/react-icons';
-import { Mail, Trash } from 'lucide-react';
+import { Loader2, Mail, Trash } from 'lucide-react';
 
 interface EmailInputProps {
   onSubmit: (email: string) => void;
@@ -59,7 +58,7 @@ const EmailInput: React.FC<EmailInputProps> = ({ onSubmit, isProcessing }) => {
           >
             {isProcessing ? (
               <>
-                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Summarizing...
               </>
             ) : (
